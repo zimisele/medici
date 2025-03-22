@@ -1,41 +1,40 @@
-name: Deploy Terraform to AWS
+name: Terraform Cleanup
 
 on:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *' # Runs every day at midnight, adjust as needed
 
 jobs:
-  terraform:
-    runs-on: ubuntu-latest 
+  terraform-cleanup:
+    name: 'Post Apply Cleanup'
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_REGION: 'eu-west-1'
+      TF_VERSION: '1.4.0'
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3 
+    - name: 'Checkout GitHub repository'
+      uses: actions/checkout@v2
 
-    - name: Set up Terraform
-      uses: hashicorp/setup-terraform@v2 
-      with:
-        terraform_version: '1.3.6'  
-
-    - name: Set up AWS credentials
+    - name: 'Configure AWS credentials'
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}  
-        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws_region: ${{ secrets.AWS_REGION }}  
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
 
-    - name: Install dependencies
-      run: |
-        terraform init   
+    - name: 'Set up Terraform'
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: ${{ env.TF_VERSION }}
 
-    - name: Terraform Plan
-      run: |
-        terraform plan -out=tfplan  
+    - name: 'Terraform Init'
+      run: terraform init
 
-    - name: Terraform Apply
-      run: |
-        terraform apply -auto-approve tfplan  
+    - name: 'Terraform Plan Destroy'
+      run: terraform plan -destroy -out=tfplan-destroy
+
+    - name: 'Terraform Apply Destroy'
+      run: terraform apply -auto-approve tfplan-destroy
