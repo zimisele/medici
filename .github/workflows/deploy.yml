@@ -21,6 +21,10 @@ jobs:
         with:
           terraform_version: 1.0.1
           terraform_wrapper: false
+          
+      - name: Verify AWS Credentials
+        run: aws sts get-caller-identity
+
 
       - name: Terraform Format
         id: fmt
