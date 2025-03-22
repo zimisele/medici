@@ -1,8 +1,9 @@
 terraform {
     backend "s3" {
-        bucket = "mys3bucketZimisele"
+        bucket = "zmiselebucketdemo"
         region = "eu-west-1"
-        key = ""
+        key = "network/terraform.tfstate"
         encrypt = true
+        region = "eu-west-1"
     }
 }
