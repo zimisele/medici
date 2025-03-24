@@ -2,6 +2,7 @@ resource "aws_vpc" "main" {
   cidr_block       = "10.0.0.0/16"
   instance_tenancy = "default"
   enable_dns_support = "true"
+  enable_dns_hostnames = true
 
   tags = {
 	Name = "MyVPC"
@@ -18,6 +19,7 @@ resource "aws_subnet" "public" {
   vpc_id     = aws_vpc.main.id
   cidr_block = "10.0.1.0/24"
   availability_zone = "eu-west-1a"
+  map_public_ip_on_launch = true
   tags = {
 	Name = "PublicSubnet"
   }
@@ -144,16 +146,6 @@ resource "aws_instance" "ec2_instance" {
   subnet_id     = aws_subnet.public.id
   key_name = "demo"
   vpc_security_group_ids  = [aws_security_group.ec2_sg.id]
-  user_data = <<-EOF
-            #!/bin/bash
-            sudo apt update
-            sudo apt install docker.io -y
-            sudo apt-get install zip unzip -y
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip  # Extract the AWS CLI installer
-             sudo ./aws/install   
-            EOF
-
   tags = {
 	Name = "EC2 Instance"
   }
