@@ -142,6 +142,7 @@ resource "aws_instance" "ec2_instance" {
   ami           = "ami-0df368112825f8d8f"
   instance_type = "t3.micro"
   subnet_id     = aws_subnet.public.id
+  key_name = "demo"
   vpc_security_group_ids  = [aws_security_group.ec2_sg.id]
   user_data = <<-EOF
             #!/bin/bash
