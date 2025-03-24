@@ -139,7 +139,7 @@ resource "aws_security_group" "rds_sg" {
 
 #here is my ec2 instance
 resource "aws_instance" "ec2_instance" {
-  ami           = "ami-08f9a9c699d2ab3f9"
+  ami           = "ami-0df368112825f8d8f"
   instance_type = "t3.micro"
   subnet_id     = aws_subnet.public.id
   vpc_security_group_ids  = [aws_security_group.ec2_sg.id]
