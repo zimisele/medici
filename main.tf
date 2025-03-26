@@ -191,3 +191,4 @@ resource "aws_ecr_repository" "myECR" {
 	scan_on_push = true
   }
 }
+##first push
